@@ -1,0 +1,27 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CC	Makefile	/^CC=gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS= -g $/;"	m
+INCLUDEDIR	Makefile	/^INCLUDEDIR= -I .\/include -I.$/;"	m
+LIBS	Makefile	/^LIBS= -lcurses$/;"	m
+PROGRAMS	Makefile	/^PROGRAMS=demo-2048-c \\$/;"	m
+SRCDIR	Makefile	/^SRCDIR= .\/src$/;"	m
+_DEMO2048C_H	include/demo2048c.h	30;"	d
+_STDAFX_H	include/stdafx.h	17;"	d
+a	include/demo2048c.h	/^int a[4][4];$/;"	v
+a	src/main.c	/^int a[4][4] = {0};$/;"	v
+cnt_one	src/demo2048c.c	/^int cnt_one(int y, int x)$/;"	f
+cnt_value	src/demo2048c.c	/^void cnt_value(int *new_y, int *new_x)$/;"	f
+draw	src/demo2048c.c	/^void draw()$/;"	f
+draw_one	src/demo2048c.c	/^void draw_one(int y, int x)$/;"	f
+empty	include/demo2048c.h	/^int empty;$/;"	v
+game_over	src/demo2048c.c	/^int game_over()$/;"	f
+init	src/demo2048c.c	/^void init()$/;"	f
+main	src/main.c	/^int main()$/;"	f
+old_x	include/demo2048c.h	/^int old_y, old_x;$/;"	v
+old_y	include/demo2048c.h	/^int old_y, old_x;$/;"	v
+play	src/demo2048c.c	/^void play()$/;"	f
