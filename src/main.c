@@ -1,22 +1,18 @@
 /*************************************************************************
-	> File Name: main.c
-	> Author: 
-	> Mail: 
-	> Created Time: 2016年07月11日 星期一 02时07分14秒
+        > File Name: main.c
+        > Author:
+        > Mail:
+        > Created Time: 2016年07月11日 星期一 02时07分14秒
  ************************************************************************/
 
-#include "stdafx.h"
 #include "demo2048c.h"
+#include "stdafx.h"
 
 int a[4][4] = {0};
 
-int main()
-{
-    init();
-    play();
-    endwin();
+int main() {
+  init();
+  play();
 
-    return 0;
+  return 0;
 }
-
-

@@ -13,19 +13,111 @@ void init() {
   noecho();
   curs_set(0);
 
-  empty = 14;
+  empty = sizeof(a) / sizeof(a[0][0]);
   srand(time(0));
-  init_number(2);
-  init_number(4);
+  add_number();
+  add_number();
   draw();
 }
 
-// 生成随机数
-void init_number(int number) {
-  int y, x;
-  x = rand() % 4;
-  y = rand() % 4;
-  a[y][x] = number;
+// 用 wsad 来表示上下左右方向
+void play() {
+
+  int old_empty;
+  char ch;
+
+  while (1) {
+    moved = 0;
+    old_empty = empty;
+
+    ch = getch();
+    switch (ch) {
+    case 'A':
+    case 'a':
+      left();
+      break;
+    case 'D':
+    case 'd':
+      right();
+      break;
+    case 'W':
+    case 'w':
+      up();
+      break;
+    case 'S':
+    case 's':
+      down();
+      break;
+    case 'Q':
+    case 'q':
+      endflag = -1;
+      break;
+    default:
+      continue;
+      break;
+    }
+
+    draw(); // refresh
+    if (empty <= 0 && test_lose()) {
+      endflag = 1;
+    }
+
+    if (endflag == -1 || endflag == 1 || endflag == 2) {
+      game_over();
+    }
+
+    //生成新方块
+    if ((empty != old_empty) ||
+        (moved == 1)) { //修复了不移动或不消除方块也生成新方块的bug
+      add_number();
+      draw();
+    }
+  }
+}
+
+// 游戏结束子函数
+int game_over() {
+
+  draw_over();
+  sleep(1);
+  endwin();
+  exit(0);
+}
+
+int test_lose() {
+  int y, x, j, i;
+  for (y = 0; y < 4; y++)
+    for (x = 0; x < 3; x++)
+      if (a[y][x] == a[y + 1][x] || a[y][x] == a[y][x + 1]) {
+        return 0;
+      }
+  x = 3;
+  for (y = 0; y < 3; y++)
+    if (a[y][3] == a[y + 1][3]) {
+      return 0;
+    }
+  y = 3;
+  for (x = 0; x < 3; x++)
+    if (a[3][x] == a[3][x + 1]) {
+      return 0;
+    }
+
+  return 1;
+}
+
+// add_number 函数用于生成随机数
+void add_number() {
+  int new_x, new_y, tmp;
+  do {
+    new_x = rand() % 4;
+    new_y = rand() % 4;
+  } while (a[new_y][new_x] != 0);
+
+  do {
+    tmp = rand() % 4;
+  } while (tmp == 0 || tmp == 2);
+  a[new_y][new_x] = tmp + 1;
+  empty--;
 }
 
 // draw绘制方格
@@ -49,6 +141,9 @@ void draw() {
   for (y = 0; y < 4; y++) //数字
     for (x = 0; x < 4; x++) {
       draw_one(y, x);
+      if (a[y][x] == 64) {
+        endflag = 2;
+      }
     }
 }
 
@@ -70,67 +165,6 @@ void draw_one(int y, int x) {
     move(2 * y + 1, k);
     addch(c[m++]);
     k--;
-  }
-}
-
-// 用 wsad 来表示上下左右方向
-void play() {
-  int new_x, new_y, tmp;
-  int old_empty;
-  char ch;
-
-  while (1) {
-    movable = 0;
-    old_empty = empty;
-    // draw();
-    ch = getch();
-    switch (ch) {
-    case 'A':
-    case 'a':
-      left();
-      break;
-    case 'D':
-    case 'd':
-      right();
-      break;
-    case 'W':
-    case 'w':
-      up();
-      break;
-    case 'S':
-    case 's':
-      down();
-      break;
-    case 'Q':
-    case 'q':
-      game_over(-1);
-      break;
-    default:
-      continue;
-      break;
-    }
-
-    if (empty <= 0)
-      game_over(0);
-    draw();
-    //生成新方块
-    if ((empty != old_empty) ||
-        (movable == 1)) { //修复了不移动或消除方块也生成新方块的bug
-      do {
-        new_x = rand() % 4;
-        new_y = rand() % 4;
-      } while (a[new_y][new_x] != 0);
-
-      cnt_value(&new_y, &new_x);
-
-      do {
-        tmp = rand() % 4;
-      } while (tmp == 0 || tmp == 2);
-      a[new_y][new_x] = tmp + 1;
-      empty--;
-
-      draw_one(new_y, new_x);
-    }
   }
 }
 
@@ -171,7 +205,7 @@ void left() {
         for (i = x; (i > 0) && (a[y][i - 1] == 0); i--) {
           a[y][i - 1] = a[y][i];
           a[y][i] = 0;
-          movable = 1;
+          moved = 1;
         }
       }
     }
@@ -212,7 +246,7 @@ void right() {
         for (i = x; (i < 3) && (a[y][i + 1] == 0); i++) {
           a[y][i + 1] = a[y][i];
           a[y][i] = 0;
-          movable = 1;
+          moved = 1;
         }
       }
     }
@@ -253,7 +287,7 @@ void up() {
         for (i = y; (i > 0) && (a[i - 1][x] == 0); i--) {
           a[i - 1][x] = a[i][x];
           a[i][x] = 0;
-          movable = 1;
+          moved = 1;
         }
       }
     }
@@ -294,65 +328,21 @@ void down() {
         for (i = y; (i < 3) && (a[i + 1][x] == 0); i++) {
           a[i + 1][x] = a[i][x];
           a[i][x] = 0;
-          movable = 1;
-        }
-      }
-    }
-}
-// 下面的函数用于生成新数字的位置
-int cnt_one(int y, int x) {
-  int value = 1;
-
-  if (y - 1 > 0)
-    a[y - 1][x] ? 0 : value++;
-  if (y + 1 < 4)
-    a[y + 1][x] ? 0 : value++;
-  if (x - 1 >= 0)
-    a[y][x - 1] ? 0 : value++;
-  if (x + 1 < 4)
-    a[y][x + 1] ? 0 : value++;
-  if (y - 1 >= 0 && x - 1 >= 0)
-    a[y - 1][x - 1] ? 0 : value++;
-  if (y - 1 >= 0 && x + 1 < 4)
-    a[y - 1][x + 1] ? 0 : value++;
-  if (y + 1 < 4 && x - 1 >= 0)
-    a[y + 1][x - 1] ? 0 : value++;
-  if (y + 1 < 4 && x + 1 < 4)
-    a[y + 1][x + 1] ? 0 : value++;
-
-  return value;
-}
-
-void cnt_value(int *new_y, int *new_x) {
-  int max_x, max_y, x, y, value;
-  int max = 0;
-
-  max = cnt_one(*new_y, *new_x);
-  for (y = 0; y < 4; y++)
-    for (x = 0; x < 4; x++) {
-      if (!a[y][x]) {
-        value = cnt_one(y, x);
-        if (value > max && old_y != y &&
-            old_x != x) { //避免在同一位置反复出现新方块
-          *new_y = y;
-          *new_x = x;
-          old_x = x;
-          old_y = y;
-          break;
+          moved = 1;
         }
       }
     }
 }
 
-void draw_over(int endflag) {
+void draw_over() {
   int y = 9, x = 0;
   char output[30];
 
   switch (endflag) {
-  case 0:
+  case 1:
     strcpy(output, "You lose! ");
     break;
-  case 1:
+  case 2:
     strcpy(output, "You win! ");
     break;
   case -1:
@@ -365,15 +355,6 @@ void draw_over(int endflag) {
     move(y, x);
     addch(output[i]);
   }
-
   refresh();
   char chtmp = getch();
-}
-// 游戏结束子函数
-int game_over(int endflag) {
-
-  draw_over(endflag);
-  sleep(1);
-  endwin();
-  exit(0);
 }

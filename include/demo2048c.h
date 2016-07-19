@@ -13,24 +13,24 @@
 // 4*4方格
 int a[4][4];
 // 方格里空格的个数
-int empty, movable;
+int empty, moved, endflag;
 int old_y, old_x;
 
 /*
         global function
 */
-void draw();
-void play();
 void init();
-void init_number(int number);
+void add_number();
+void draw();
 void draw_one(int y, int x);
+void play();
 void left();
 void right();
 void up();
 void down();
-void cnt_value(int *new_y, int *new_x);
 int game_over();
-int cnt_one(int y, int x);
+int test_lose();
+void draw_over();
 
 #define _DEMO2048C_H
 #endif
