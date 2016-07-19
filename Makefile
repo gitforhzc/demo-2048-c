@@ -1,4 +1,4 @@
-CC=gcc
+CC=clang
 CFLAGS= -g 
 SRCDIR= ./src
 INCLUDEDIR= -I ./include -I.
