@@ -15,7 +15,7 @@ int a[4][4];
 
 // 方格里空格的个数, 标记已移动
 int empty, moved;
-int endflag; // 标记退出情况：-1 退出， 1 输， 2 赢
+enum { playing, quit, lose, win } endflag; // 标记退出情况：0 退出， 1 输， 2 赢
 
 /*
         global function

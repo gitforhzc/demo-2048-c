@@ -58,7 +58,7 @@ void draw() {
     for (x = 0; x < 4; x++) {
       draw_one(y, x);
       if (a[y][x] == 2048) { // 胜利条件，出现2048
-        endflag = 2;
+        endflag = win;
       }
     }
 }
@@ -117,7 +117,7 @@ void play() {
       break;
     case 'Q':
     case 'q':
-      endflag = -1;
+      endflag = quit;
       break;
     default:
       continue;
@@ -127,11 +127,11 @@ void play() {
 
     // 游戏失败
     if (empty <= 0 && test_lose()) {
-      endflag = 1;
+      endflag = lose;
     }
 
     // 判断游戏结束条件
-    if (endflag == -1 || endflag == 1 || endflag == 2) {
+    if (endflag != playing) {
       game_over();
     }
 
@@ -347,13 +347,14 @@ void draw_over() {
   char output[30];
 
   switch (endflag) {
-  case 1:
+  case playing:
+  case lose:
     strcpy(output, "You lose! ");
     break;
-  case 2:
+  case win:
     strcpy(output, "You win! ");
     break;
-  case -1:
+  case quit:
     strcpy(output, "");
     break;
   }
