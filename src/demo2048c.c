@@ -348,6 +348,8 @@ void draw_over() {
 
   switch (endflag) {
   case playing:
+    strcpy(output, "something wrong! ");
+    break;
   case lose:
     strcpy(output, "You lose! ");
     break;
